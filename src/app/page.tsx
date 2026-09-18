@@ -244,6 +244,7 @@ export default function Home() {
   const [locale, setLocale] = useState<Locale>("es");
   const [categoryFilter, setCategoryFilter] = useState<ProjectCategory>("all");
   const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const t = content[locale];
 
   // Filter projects according to category tab
@@ -252,11 +253,27 @@ export default function Home() {
     return item.category === categoryFilter;
   });
 
-  // Handle ESC key to close modal
+  // Sincroniza el idioma del documento con el toggle ES/EN.
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
+  // Cierra el panel móvil al pasar a un ancho donde vuelve la navegación completa.
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 761px)");
+    const onChange = () => {
+      if (mq.matches) setMenuOpen(false);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  // Handle ESC key to close modal and mobile menu
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSelectedCase(null);
+        setMenuOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -264,7 +281,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main>
+    <main id="main">
       <section className="hero shell" id="top">
         <header className="topbar">
           <a className="brand" href="#top">
@@ -289,7 +306,37 @@ export default function Home() {
             <a className="button" href="#contact">
               {t.project} <span aria-hidden>↗</span>
             </a>
+            <button
+              className="menu-toggle mono"
+              type="button"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav"
+              aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <span className="bars" aria-hidden>
+                <span />
+                <span />
+                <span />
+              </span>
+              {menuOpen ? "Cerrar" : "Menú"}
+            </button>
           </nav>
+          {menuOpen && (
+            <nav
+              id="mobile-nav"
+              className="nav-panel mono"
+              aria-label="Navegación móvil"
+              onClick={() => setMenuOpen(false)}
+            >
+              <a href="#top">Home</a>
+              <a href="#work">Work</a>
+              <a href="#capabilities">Capabilities</a>
+              <a href="#method">Method</a>
+              <a href="#lab">Lab</a>
+              <a href="#contact">{t.project}</a>
+            </nav>
+          )}
         </header>
         <div className="hero-grid">
           <p className="meta mono">{t.based}</p>
@@ -467,7 +514,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="footer shell mono">
-        <span>© 2026 Sublime Design</span>
+        <span>© 2026 Sublime Lab</span>
         <span>Design / Product / Code</span>
       </footer>
 

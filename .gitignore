@@ -1,7 +1,15 @@
 node_modules
 .next
+out
 build
 dist
-.env*
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.vercel
+.firebase
+firebase-debug.log
+npm-debug.log*
 .DS_Store
 
