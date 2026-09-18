@@ -48,7 +48,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .meta { align-self:start; }
 h1 { font:900 clamp(44px,14vw,158px)/.85 "Inter Tight",sans-serif; letter-spacing:-.075em; text-transform:uppercase; }
 .lede { max-width:340px; margin:22px 0 30px; font-size:17px; line-height:1.4; }
-.wordmark { align-self:end; margin-top:32px; font:900 clamp(64px,25vw,350px)/.72 "Inter Tight",sans-serif; letter-spacing:-.09em; white-space:nowrap; max-width:100%; overflow:hidden; }
+/* El wordmark se ajusta al ancho REAL del contenedor (cqw = ancho del .hero),
+   con un cap de 16cqw para que no desborde en ninguna medida de pantalla.
+   Antes usaba vw y en móvil se recortaba la E final. */
+.wordmark { container-type:inline-size; align-self:end; width:100%; margin-top:26px; font-family:"Inter Tight",sans-serif; font-weight:900; text-transform:uppercase; white-space:nowrap; line-height:.72; letter-spacing:-.075em; font-size:min(27cqw,16cqw + 42px); }
 
 /* --- Bloques de contenido --- */
 .layout { display:grid; gap:14px; }
