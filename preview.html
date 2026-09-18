@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sublime Design — Visual Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,600;0,800;0,900;1,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root { --ink:#121212; --coral:#ffaaa0; --paper:#f4f1ed; --steel:#a59f9a; --line:#2a2928; }
+      * { box-sizing:border-box; }
+      html { scroll-behavior:smooth; }
+      body { margin:0; color:var(--paper); background:var(--ink); font-family:"Hanken Grotesk",Arial,sans-serif; }
+      a { color:inherit; text-decoration:none; }
+      .mono { font:500 11px/1.25 "JetBrains Mono",monospace; letter-spacing:-.04em; text-transform:uppercase; }
+      .shell { padding:0 clamp(20px,4.4vw,68px); }
+      .top { display:flex; justify-content:space-between; align-items:center; position:fixed; z-index:10; top:25px; left:clamp(20px,4.4vw,68px); right:clamp(20px,4.4vw,68px); color:#fff; mix-blend-mode:difference; }
+      .brand { font:900 clamp(24px,2.2vw,34px)/.8 "Inter Tight",sans-serif; letter-spacing:-.075em; }
+      .nav { display:flex; align-items:center; gap:20px; }
+      .nav-links { display:flex; gap:16px; color:var(--steel); }
+      .button { display:inline-flex; gap:12px; align-items:center; padding:12px 15px; background:var(--ink); color:var(--coral); border:1px solid var(--ink); font:500 11px "JetBrains Mono",monospace; text-transform:uppercase; }
+      .button:hover { background:var(--coral); color:var(--ink); }
+      .top .button { padding:0; background:transparent; border:0; color:inherit; }
+      .top .button:hover { background:transparent; color:inherit; text-decoration:underline; text-underline-offset:4px; }
+      .hero { min-height:86vh; background:var(--coral); color:var(--ink); overflow:hidden; }
+      .hero-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:18px; min-height:calc(86vh - 86px); align-content:center; padding-top:100px; padding-bottom:48px; }
+      .meta { grid-column:2 / span 2; align-self:start; margin-top:42px; }
+      .intro { grid-column:4 / span 8; }
+      h1,h2,h3,p { margin:0; }
+      h1 { max-width:1000px; font:900 clamp(66px,10vw,158px)/.83 "Inter Tight",sans-serif; letter-spacing:-.075em; text-transform:uppercase; }
+      .lede { max-width:330px; margin:28px 0 34px; font-size:18px; line-height:1.35; }
+      .wordmark { grid-column:1 / -1; align-self:end; margin-top:28px; transform:translateY(23%); font:900 clamp(120px,23.8vw,350px)/.7 "Inter Tight",sans-serif; letter-spacing:-.11em; white-space:nowrap; }
+      section { padding:clamp(80px,12vw,170px) 0; }
+      .black { background:var(--ink); }
+      .coral { background:var(--coral); color:var(--ink); }
+      .layout { display:grid; grid-template-columns:repeat(12,1fr); gap:18px; }
+      .eyebrow { grid-column:1 / span 2; color:var(--steel); padding-top:10px; }
+      .statement { grid-column:4 / span 8; }
+      h2 { font:900 clamp(48px,6.5vw,98px)/.9 "Inter Tight",sans-serif; letter-spacing:-.075em; text-transform:uppercase; }
+      .body { max-width:620px; margin-top:28px; color:var(--steel); font-size:18px; line-height:1.45; }
+      .pipeline { display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:50px; color:var(--paper); font:800 clamp(25px,3.7vw,58px)/1 "Inter Tight",sans-serif; letter-spacing:-.065em; text-transform:uppercase; }
+      .pipeline span { color:var(--coral); }
+      .archive { border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:32px 0; margin-top:46px; display:grid; grid-template-columns:repeat(10,1fr); gap:18px; }
+      .archive-title { grid-column:1 / span 3; font:900 clamp(34px,4vw,63px)/.86 "Inter Tight",sans-serif; letter-spacing:-.07em; text-transform:uppercase; }
+      .archive-copy { grid-column:5 / span 5; align-self:end; font-size:17px; line-height:1.4; color:var(--steel); }
+      .work-list { margin-top:46px; border-top:1px solid var(--line); }
+      .work-card { display:grid; grid-template-columns:100px minmax(0,1.35fr) minmax(220px,.9fr); gap:20px; padding:26px 0 30px; border-bottom:1px solid var(--line); }
+      .work-card h3 { font:800 clamp(34px,4vw,60px)/.88 "Inter Tight",sans-serif; letter-spacing:-.07em; text-transform:uppercase; }
+      .work-card p { color:var(--steel); font-size:16px; line-height:1.4; }
+      .work-meta { display:flex; flex-direction:column; align-items:flex-start; gap:14px; }
+      .work-link { color:var(--paper); font:500 11px "JetBrains Mono",monospace; text-decoration:underline; text-underline-offset:4px; text-transform:uppercase; }
+      .caps { margin-top:55px; border-top:1px solid var(--line); }
+      .cap { display:grid; grid-template-columns:80px 1fr 260px; gap:16px; align-items:center; padding:22px 0; border-bottom:1px solid var(--line); }
+      .cap h3 { font:800 clamp(35px,4vw,62px)/.9 "Inter Tight",sans-serif; letter-spacing:-.07em; text-transform:uppercase; }
+      .cap p { color:var(--steel); font-size:15px; line-height:1.35; }
+      .method { margin-top:55px; display:grid; grid-template-columns:repeat(5,1fr); gap:0; border-top:1px solid rgba(18,18,18,.45); }
+      .step { min-height:170px; padding:20px 16px 0 0; border-right:1px solid rgba(18,18,18,.45); }
+      .step:last-child { border-right:0; }
+      .step h3 { margin-top:55px; font:800 clamp(27px,3vw,45px)/.88 "Inter Tight",sans-serif; letter-spacing:-.06em; text-transform:uppercase; }
+      .contact { min-height:75vh; display:grid; align-content:center; }
+      .contact h2 { max-width:920px; color:var(--coral); }
+      .contact .body { color:var(--paper); }
+      .contact .button { margin-top:34px; width:max-content; background:var(--coral); color:var(--ink); }
+      footer { display:flex; justify-content:space-between; gap:20px; padding:24px 0 30px; border-top:1px solid var(--line); color:var(--steel); }
+      @media (max-width:760px) {
+        .top { top:20px; left:16px; right:16px; }
+        .nav-links { display:none; } .nav { gap:11px; } .hero { min-height:760px; } .hero-grid { grid-template-columns:repeat(4,1fr); min-height:650px; gap:12px; padding-top:60px; }
+        .meta { grid-column:1 / -1; margin:0; } .intro { grid-column:1 / -1; } h1 { font-size:clamp(62px,17vw,104px); } .wordmark { font-size:34vw; margin-top:38px; }
+        .layout { grid-template-columns:repeat(4,1fr); gap:12px; } .eyebrow,.statement { grid-column:1 / -1; } .statement { margin-top:28px; } .archive { grid-template-columns:repeat(4,1fr); } .archive-title,.archive-copy { grid-column:1 / -1; }
+        .cap { grid-template-columns:38px 1fr; } .cap p { grid-column:2; } .method { grid-template-columns:1fr; } .step { min-height:auto; padding:20px 0; border-right:0; border-bottom:1px solid rgba(18,18,18,.45); } .step h3 { margin-top:28px; }
+        .work-card { grid-template-columns:38px 1fr; gap:12px; } .work-card p,.work-meta { grid-column:2; }
+        footer { flex-direction:column; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero shell">
+        <header class="top"><a class="brand" href="#top" aria-label="Sublime Design — Home">SUBLIME</a><nav class="nav mono"><div class="nav-links"><a href="#top">Home</a><a href="#work">Work</a><a href="#capabilities">Capabilities</a><a href="#method">Method</a></div><span>ES / EN</span><a class="button" href="#contact">Start a project ↗</a></nav></header>
+        <div class="hero-grid" id="top"><div class="meta mono">Based in Argentina<br>Working remotely<br>2026</div><div class="intro"><h1>Ideas become identity, interface and product.</h1><p class="lede">Una práctica independiente que une dirección de arte, diseño de producto y código.</p><a class="button" href="#contact">Iniciar un proyecto ↗</a></div><div class="wordmark">SUBLIME</div></div>
+      </section>
+      <section class="black shell"><div class="layout"><p class="eyebrow mono">01 / Practice</p><div class="statement"><h2>Una idea no termina en un logo.</h2><p class="body">Diseñamos el sistema que conecta intención, uso y ejecución. Cada disciplina aparece cuando aporta claridad y una mejor experiencia.</p><div class="pipeline">Brand <span>→</span> Identity <span>→</span> Interface <span>→</span> Product <span>→</span> Technology</div></div></div></section>
+      <section class="black shell" id="work"><div class="layout"><p class="eyebrow mono">02 / Selected work</p><div class="statement"><h2>Trabajo seleccionado.</h2><div class="work-list"><article class="work-card"><span class="mono">01 / Real</span><div><h3>Oliver Sur</h3><p>Dirección digital integral para una marca de ventiladores: diseño del sitio, experiencia de catálogo y presencia de contenido para Instagram.</p></div><div class="work-meta"><p class="mono">WEB · CONTENT · SOCIAL<br>HOSTINGER AI / ART DIRECTION</p><a class="work-link" href="https://www.oliversurventiladores.com/" target="_blank" rel="noreferrer">Ver sitio ↗</a></div></article><article class="work-card"><span class="mono">02 / Real</span><div><h3>Estudio Brontes</h3><p>Diseño integral del portfolio digital para un estudio de diseño industrial, pensado para mostrar servicios, proyectos y capacidades.</p></div><div class="work-meta"><p class="mono">PORTFOLIO · WEB DESIGN<br>INDUSTRIAL DESIGN STUDIO</p><a class="work-link" href="https://estudiobrontes.com/" target="_blank" rel="noreferrer">Ver sitio ↗</a></div></article><article class="work-card"><span class="mono">03 / Live</span><div><h3>Club de Lectores</h3><p>Rediseño de un blog desde cero: nueva arquitectura de navegación y una plataforma editorial en evolución, preparada para escalar hacia futuras funciones.</p></div><div class="work-meta"><p class="mono">UX · INFORMATION ARCHITECTURE<br>EDITORIAL PLATFORM / VERCEL</p><a class="work-link" href="https://club-de-lectores-anonimos.vercel.app/" target="_blank" rel="noreferrer">Ver sitio ↗</a></div></article></div></div></div></section>
+      <section class="coral shell" id="capabilities"><div class="layout"><p class="eyebrow mono" style="color:#121212">03 / Capabilities</p><div class="statement"><h2>Un sistema.<br>Varias escalas.</h2><div class="caps"><div class="cap"><span class="mono">01</span><h3>Identity</h3><p>Estrategia visual, identidad, dirección de arte y sistemas de marca.</p></div><div class="cap"><span class="mono">02</span><h3>Digital</h3><p>Sitios, ecommerce, campañas y experiencias web.</p></div><div class="cap"><span class="mono">03</span><h3>Product</h3><p>UX/UI, flujos, interfaces y sistemas de diseño.</p></div><div class="cap"><span class="mono">04</span><h3>Technology</h3><p>Frontend, integraciones, automatización e IA aplicada cuando aporta valor.</p></div></div></div></div></section>
+      <section class="coral shell" id="method"><div class="layout"><p class="eyebrow mono" style="color:#121212">04 / Method</p><div class="statement"><h2>De intención a sistema.</h2><div class="method"><div class="step"><span class="mono">01</span><h3>Context</h3></div><div class="step"><span class="mono">02</span><h3>Direction</h3></div><div class="step"><span class="mono">03</span><h3>System</h3></div><div class="step"><span class="mono">04</span><h3>Build</h3></div><div class="step"><span class="mono">05</span><h3>Evolve</h3></div></div></div></div></section>
+      <section class="black shell contact" id="contact"><p class="mono" style="color:var(--steel)">05 / Contact</p><h2>¿Tenés algo que necesita tomar forma?</h2><p class="body">Contanos dónde estás, qué querés construir y qué necesitás resolver.</p><a class="button" href="mailto:hello@example.com">Iniciar un proyecto ↗</a></section>
+    </main>
+    <footer class="shell mono"><span>© 2026 Sublime Design</span><span>Design / Product / Code</span></footer>
+  </body>
+</html>
