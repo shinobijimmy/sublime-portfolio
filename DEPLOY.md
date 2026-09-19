@@ -45,6 +45,40 @@ que es una acción de cuenta que solo puede hacer el fundador.
 - **Contacto:** el CTA usa `mailto:hello@sublimedesign.co`. Verificar que ese buzón exista
   antes de anunciar el sitio.
 
+## Rollback
+
+Requisito de la puerta de Fase 11. Hay que saber cómo volver antes de necesitarlo.
+
+**Opción A · Promover un deployment anterior (la más rápida, sin tocar Git)**
+
+1. En Vercel, entrar al proyecto → pestaña **Deployments**.
+2. Ubicar la última versión que funcionaba.
+3. Menú **⋯ → Promote to Production**.
+4. Verificar la URL. El cambio es inmediato.
+
+Esto no cambia el repositorio: `main` sigue con el código nuevo, así que el próximo push
+volverá a desplegar el estado actual. Útil para cortar un problema en caliente.
+
+**Opción B · Revertir el commit (deja el repositorio consistente)**
+
+```bash
+cd "C:/Users/iseaa/Documents/jimmy/dISEÑO/Portfolio_Jimmy/landing jimmy"
+git revert <sha-del-commit-malo>
+git push origin main
+```
+
+Vercel despliega el revert automáticamente. Es la opción correcta cuando el problema está
+en el código y no solo en el build.
+
+**Verificación después de cualquier rollback**
+
+1. La URL responde 200 y carga el contenido.
+2. El CTA de contacto abre el correo correcto.
+3. El menú móvil funciona en un ancho menor a 761 px.
+
+**Qué NO hacer:** borrar el proyecto en Vercel. Se pierde el historial de deployments y con
+él la opción A.
+
 ## Variables de entorno
 
 Ninguna es obligatoria para publicar. `next start` arranca sin ellas.
