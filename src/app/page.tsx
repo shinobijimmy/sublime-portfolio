@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import BlimContact from "./BlimContact";
 
 type Locale = "es" | "en";
 type ProjectCategory = "all" | "Real" | "Concept" | "Lab";
@@ -507,9 +508,7 @@ export default function Home() {
         <p className="mono">06 / Contact</p>
         <h2>{t.contact}</h2>
         <p className="body-copy">{t.contactText}</p>
-        <a className="button contact-button" href="mailto:hello@sublimedesign.co">
-          {t.project} <span aria-hidden>↗</span>
-        </a>
+        <BlimContact locale={locale} />
       </section>
 
       {/* Footer */}

@@ -81,19 +81,50 @@ en el código y no solo en el build.
 
 ## Variables de entorno
 
-Ninguna es obligatoria para publicar. `next start` arranca sin ellas.
+Solo las del contacto son necesarias para que el formulario funcione.
 
 | Variable | Uso | Obligatoria |
 | --- | --- | --- |
+| `RESEND_API_KEY` | Envío del formulario (`/api/contact`) | **Sí, para el formulario** |
+| `CONTACT_TO` | Destino del brief | **Sí, para el formulario** |
+| `CONTACT_FROM` | Remitente. Si falta, usa `onboarding@resend.dev` | No |
 | `NEXT_PUBLIC_SITE_URL` | `metadataBase`, canonical y Open Graph | Recomendada |
 | `NEXT_PUBLIC_FIREBASE_*` | Firebase web (Stage 2) | No |
 | `FIREBASE_*` | Credenciales de servidor (Stage 3) | No |
-| `CONTACT_*` | Endpoint de contacto (Stage 3) | No |
+
+`RESEND_API_KEY` y `CONTACT_TO` viven en Vercel y **no se versionan**. Sin ellas, `/api/contact`
+responde `503` y el formulario muestra un error en lugar de fallar en silencio.
+
+### Límite de Resend sin dominio verificado
+
+Con `onboarding@resend.dev` como remitente, Resend **solo deja enviar al correo dueño de la
+cuenta**. Para recibir briefs en otra dirección hace falta verificar un dominio propio y definir
+`CONTACT_FROM` con una dirección de ese dominio.
+
+## Formulario de contacto (blim)
+
+La sección de contacto usa un formulario guiado por pasos en lugar de un `mailto`. La mascota
+`blim` arma el brief conversando:
+
+1. qué necesita (identidad / web / producto / otro)
+2. contexto del proyecto
+3. objetivo
+4. referencias (opcional)
+5. plazo (opcional)
+6. nombre
+7. email
+
+Al final muestra el brief armado y pide confirmación antes de enviar. Es bilingüe y sigue el
+toggle ES/EN del sitio.
+
+**Protecciones:** validación de campos y de email, límite de 5 envíos por hora por IP, campo
+trampa oculto y descarte de envíos completados en menos de 2 segundos.
+
+**Código:** `src/app/BlimContact.tsx` (interfaz) y `src/app/api/contact/route.ts` (endpoint).
 
 ## Pendientes que no bloquean el deploy
 
-- **Formulario de contacto real.** Bloqueado hasta definir destinatario, campos y plazo de
-  respuesta (`docs/discovery/05-mvp-blueprint.md`). Hoy el CTA abre el cliente de correo.
-- **Casos de estudio internos.** Los tres trabajos enlazan a sitios externos.
+- **Casos de estudio internos.** Los trabajos enlazan a sitios externos.
 - **Verificación en navegador real.** El layout se verificó con capturas automatizadas;
   falta una pasada manual en un teléfono.
+- **Dominio verificado en Resend** para poder enviar a cualquier destinatario.
