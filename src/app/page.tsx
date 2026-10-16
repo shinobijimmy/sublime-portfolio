@@ -510,7 +510,7 @@ export default function Home() {
         <p className="mono">06 / Contact</p>
         <h2>{t.contact}</h2>
         <p className="body-copy">{t.contactText}</p>
-        <BlimContact locale={locale} />
+        <BlimContact key={locale} locale={locale} />
       </section>
 
       {/* Footer */}
