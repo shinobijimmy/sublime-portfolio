@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import BlimContact from "./BlimContact";
 
 type Locale = "es" | "en";
@@ -22,8 +22,6 @@ interface CaseStudy {
   viewCaseLabel: string;
   /** Piezas del trabajo. La primera se usa como preview en el listado. */
   previews?: Preview[];
-  /** Aclaración cuando el sitio del cliente ya no representa el trabajo. */
-  note?: string;
 }
 
 interface Preview {
@@ -85,7 +83,6 @@ const content = {
         solution: "Diseño y desarrollo de una plataforma web minimalista orientada al producto, jerarquía tipográfica fuerte y un sistema de piezas visuales adaptables a redes sociales.",
         techSystem: "Web Architecture / Hostinger AI / Instagram Visual Grid",
         viewCaseLabel: "Ver Caso ↗",
-        note: "El sitio de Oliver Sur se renovó después de esta entrega y hoy ya no muestra este trabajo. El caso se cuenta con piezas propias y no enlaza al sitio.",
       },
       {
         status: "02 / Real",
@@ -212,7 +209,6 @@ const content = {
         solution: "Design and development of a minimalist product-focused web platform, crisp typographic hierarchy, and flexible social media assets.",
         techSystem: "Web Architecture / Hostinger AI / Instagram Visual Grid",
         viewCaseLabel: "View Case ↗",
-        note: "The Oliver Sur site was redesigned after this delivery and no longer shows this work. The case is told with our own pieces and does not link to the site.",
       },
       {
         status: "02 / Real",
@@ -295,7 +291,15 @@ export default function Home() {
   const [categoryFilter, setCategoryFilter] = useState<ProjectCategory>("all");
   const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  // Guarda el disparador para devolverle el foco al cerrar.
+  const lastFocused = useRef<HTMLElement | null>(null);
   const t = content[locale];
+
+  function openCase(item: CaseStudy) {
+    lastFocused.current = document.activeElement as HTMLElement | null;
+    setSelectedCase(item);
+  }
 
   // Filter projects according to category tab
   const filteredWork = t.workItems.filter((item) => {
@@ -329,6 +333,56 @@ export default function Home() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  // Accesibilidad del modal: el foco entra al abrirse, la tabulación queda
+  // atrapada adentro y vuelve al disparador al cerrar. El fondo queda inerte.
+  useEffect(() => {
+    if (!selectedCase) {
+      lastFocused.current?.focus();
+      lastFocused.current = null;
+      return;
+    }
+    const node = modalRef.current;
+    if (!node) return;
+
+    const focusables = () =>
+      Array.from(
+        node.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+    focusables()[0]?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    node.addEventListener("keydown", onKeyDown);
+    return () => node.removeEventListener("keydown", onKeyDown);
+  }, [selectedCase]);
+
+  // Mientras el modal está abierto, el resto de la página no recibe foco.
+  useEffect(() => {
+    const main = document.getElementById("main");
+    if (!main) return;
+    const backdrop = modalRef.current?.parentElement ?? null;
+    Array.from(main.children).forEach((child) => {
+      if (child === backdrop) return;
+      if (selectedCase) child.setAttribute("inert", "");
+      else child.removeAttribute("inert");
+    });
+  }, [selectedCase]);
 
   return (
     <main id="main">
@@ -471,7 +525,7 @@ export default function Home() {
                       <button
                         type="button"
                         className="work-link case-btn"
-                        onClick={() => setSelectedCase(item)}
+                        onClick={() => openCase(item)}
                       >
                         {item.viewCaseLabel}
                       </button>
@@ -581,6 +635,7 @@ export default function Home() {
       {selectedCase && (
         <div className="modal-backdrop" onClick={() => setSelectedCase(null)}>
           <div
+            ref={modalRef}
             className="modal-content"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
@@ -633,10 +688,6 @@ export default function Home() {
                   <p className="mono highlight">{selectedCase.techSystem}</p>
                 </div>
               </div>
-
-              {selectedCase.note && (
-                <p className="modal-note mono">{selectedCase.note}</p>
-              )}
 
               <div className="modal-footer">
                 {selectedCase.href ? (
