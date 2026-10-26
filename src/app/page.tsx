@@ -17,9 +17,18 @@ interface CaseStudy {
   problem: string;
   solution: string;
   techSystem: string;
-  label: string;
+  label?: string;
   href?: string;
   viewCaseLabel: string;
+  /** Piezas del trabajo. La primera se usa como preview en el listado. */
+  previews?: Preview[];
+  /** Aclaración cuando el sitio del cliente ya no representa el trabajo. */
+  note?: string;
+}
+
+interface Preview {
+  src: string;
+  alt: string;
 }
 
 const content = {
@@ -39,6 +48,11 @@ const content = {
     viewCase: "Ver Caso ↗",
     closeModal: "Cerrar ESC ✕",
     caseModalHead: "Ficha de Caso",
+    metaRole: "Rol",
+    metaYear: "Año",
+    metaCategory: "Categoría",
+    noLinkReal: "Trabajo real · sin enlace público",
+    noLinkLab: "Proyecto en Lab / investigación interna",
     caseProblemTitle: "01 / El Desafío",
     caseSolutionTitle: "02 / La Solución de Diseño",
     caseTechTitle: "03 / Arquitectura & Sistema",
@@ -70,9 +84,8 @@ const content = {
         problem: "Oliver Sur necesitaba consolidar su catálogo digital y presencia visual con una imagen moderna, sofisticada y funcional que proyecte la alta calidad de sus productos.",
         solution: "Diseño y desarrollo de una plataforma web minimalista orientada al producto, jerarquía tipográfica fuerte y un sistema de piezas visuales adaptables a redes sociales.",
         techSystem: "Web Architecture / Hostinger AI / Instagram Visual Grid",
-        label: "Ver sitio ↗",
-        href: "https://www.oliversurventiladores.com/",
         viewCaseLabel: "Ver Caso ↗",
+        note: "El sitio de Oliver Sur se renovó después de esta entrega y hoy ya no muestra este trabajo. El caso se cuenta con piezas propias y no enlaza al sitio.",
       },
       {
         status: "02 / Real",
@@ -162,6 +175,11 @@ const content = {
     viewCase: "View Case ↗",
     closeModal: "Close ESC ✕",
     caseModalHead: "Case Study Detail",
+    metaRole: "Role",
+    metaYear: "Year",
+    metaCategory: "Category",
+    noLinkReal: "Client work · no public link",
+    noLinkLab: "Lab project / internal research",
     caseProblemTitle: "01 / The Challenge",
     caseSolutionTitle: "02 / The Design Solution",
     caseTechTitle: "03 / Architecture & System",
@@ -193,9 +211,8 @@ const content = {
         problem: "Oliver Sur needed to consolidate its digital catalogue and visual identity with a modern, sophisticated image reflecting product quality.",
         solution: "Design and development of a minimalist product-focused web platform, crisp typographic hierarchy, and flexible social media assets.",
         techSystem: "Web Architecture / Hostinger AI / Instagram Visual Grid",
-        label: "View site ↗",
-        href: "https://www.oliversurventiladores.com/",
         viewCaseLabel: "View Case ↗",
+        note: "The Oliver Sur site was redesigned after this delivery and no longer shows this work. The case is told with our own pieces and does not link to the site.",
       },
       {
         status: "02 / Real",
@@ -470,6 +487,17 @@ export default function Home() {
                       )}
                     </div>
                   </div>
+                  {item.previews && item.previews.length > 0 && (
+                    <figure className="work-preview">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.previews[0].src}
+                        alt={item.previews[0].alt}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </figure>
+                  )}
                 </article>
               ))}
             </div>
@@ -573,10 +601,21 @@ export default function Home() {
             <div className="modal-body">
               <h2 id="modal-title">{selectedCase.title}</h2>
               <div className="modal-meta-row mono">
-                <span>ROL: {selectedCase.role}</span>
-                <span>AÑO: {selectedCase.year}</span>
-                <span>CATEGORÍA: {selectedCase.category}</span>
+                <span>{t.metaRole}: {selectedCase.role}</span>
+                <span>{t.metaYear}: {selectedCase.year}</span>
+                <span>{t.metaCategory}: {selectedCase.category}</span>
               </div>
+
+              {selectedCase.previews && selectedCase.previews.length > 0 && (
+                <div className="modal-previews">
+                  {selectedCase.previews.map((pieza) => (
+                    <figure className="modal-preview" key={pieza.src}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={pieza.src} alt={pieza.alt} loading="lazy" decoding="async" />
+                    </figure>
+                  ))}
+                </div>
+              )}
 
               <div className="modal-grid">
                 <div className="modal-section">
@@ -595,6 +634,10 @@ export default function Home() {
                 </div>
               </div>
 
+              {selectedCase.note && (
+                <p className="modal-note mono">{selectedCase.note}</p>
+              )}
+
               <div className="modal-footer">
                 {selectedCase.href ? (
                   <a
@@ -606,7 +649,9 @@ export default function Home() {
                     {selectedCase.label}
                   </a>
                 ) : (
-                  <span className="mono">PROYECTO EN LAB / INVESTIGACIÓN INTERNA</span>
+                  <span className="mono">
+                    {selectedCase.category === "Real" ? t.noLinkReal : t.noLinkLab}
+                  </span>
                 )}
               </div>
             </div>
