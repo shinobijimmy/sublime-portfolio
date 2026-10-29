@@ -99,6 +99,16 @@ const content = {
         problem: "Requerían una plataforma digital que comunique la rigurosidad técnica y la elegancia formal de su práctica de diseño industrial sin saturar la navegación.",
         solution: "Sistema de portfolio sobrio con grilla estricta, fichas de proyectos detalladas e integración visual del proceso de desarrollo de producto. Se resolvió con Hostinger Website Builder: la decisión está en la estructura, la jerarquía y el contenido, no en el código a medida.",
         techSystem: "Hostinger Website Builder (la herramienta del propio hosting) / Dirección de arte, contenido y arquitectura",
+        previews: [
+          {
+            src: "/trabajos/brontes/brontes-01.jpg",
+            alt: "Portada de Brontes: «Transformamos ideas en productos reales», sobre una imagen de corte láser.",
+          },
+          {
+            src: "/trabajos/brontes/brontes-02.jpg",
+            alt: "Nuestros servicios: diseño, gestión y fabricación.",
+          },
+        ],
         label: "Ver sitio ↗",
         href: "https://estudiobrontes.com/",
         viewCaseLabel: "Ver Caso ↗",
@@ -114,6 +124,16 @@ const content = {
         problem: "La plataforma previa presentaba fragmentación en la lectura, baja legibilidad mobile y limitaciones para estructurar hemerotecas, reseñas y ensayos.",
         solution: "Reorganización completa de la arquitectura de información, tipografía optimizada para lectura extensa y plataforma preparada para escalar a funciones comunitarias.",
         techSystem: "Vite / React / TypeScript / Node Express / Vercel",
+        previews: [
+          {
+            src: "/trabajos/club/club-01.jpg",
+            alt: "Portada de Club de Lectores Anónimos: cabecera de la revista, datos de la hemeroteca y el bloque de encuentros.",
+          },
+          {
+            src: "/trabajos/club/club-02.jpg",
+            alt: "Archivo: obras, autores y orden cronológico, con el índice hemerográfico al pie.",
+          },
+        ],
         label: "Ver sitio ↗",
         href: "https://club-de-lectores-anonimos.vercel.app/",
         viewCaseLabel: "Ver Caso ↗",
@@ -162,6 +182,20 @@ const content = {
         problem: "Los blogs de música experimental obligan a abrir plataformas por separado, perdiendo continuidad entre las portadas, los sellos y la sesión de escucha.",
         solution: "Prototipo publicado y navegable: catálogo visual de lanzamientos, búsqueda y filtros por año, cola de escucha persistente, dossier por release y Studio Mixer de doble deck. Reproducción por reproductor oficial de Bandcamp/YouTube o archivos locales que no se suben.",
         techSystem: "YouTube Data API con ranking / Reproductor oficial Bandcamp / Cola persistente / Studio Mixer de doble deck",
+        previews: [
+          {
+            src: "/trabajos/snd/snd-01.jpg",
+            alt: "Archivo de SND*: buscador, filtros por año y grilla de lanzamientos.",
+          },
+          {
+            src: "/trabajos/snd/snd-02.jpg",
+            alt: "Ficha de un lanzamiento con su portada y la referencia de la publicación original.",
+          },
+          {
+            src: "/trabajos/snd/snd-03.jpg",
+            alt: "Studio Mixer de doble deck: crossfader, ganancias y EQ por canal.",
+          },
+        ],
         label: "Ver prototipo ↗",
         href: "https://snd-steel.vercel.app/",
         viewCaseLabel: "Ver Caso ↗",
@@ -247,6 +281,16 @@ const content = {
         problem: "They required a digital platform to showcase the technical precision and formal elegance of their industrial design practice.",
         solution: "Understated portfolio system featuring a strict grid, detailed project files, and visual integration of the product development lifecycle. Built with Hostinger Website Builder: the decision lives in structure, hierarchy and content, not in custom code.",
         techSystem: "Hostinger Website Builder (the hosting's own tool) / Art direction, content and architecture",
+        previews: [
+          {
+            src: "/trabajos/brontes/brontes-01.jpg",
+            alt: "Brontes home: “We turn ideas into real products”, over a laser-cutting image.",
+          },
+          {
+            src: "/trabajos/brontes/brontes-02.jpg",
+            alt: "Our services: design, management and manufacturing.",
+          },
+        ],
         label: "View site ↗",
         href: "https://estudiobrontes.com/",
         viewCaseLabel: "View Case ↗",
@@ -262,6 +306,16 @@ const content = {
         problem: "The previous blog suffered from fragmented reading flows, poor mobile readability, and constraints when managing long-form essays.",
         solution: "Complete overhaul of information architecture, long-read optimized typography, and a backend ready to scale into community features.",
         techSystem: "Vite / React / TypeScript / Node Express / Vercel",
+        previews: [
+          {
+            src: "/trabajos/club/club-01.jpg",
+            alt: "Club de Lectores Anónimos home: the magazine masthead, archive data and the encounters block.",
+          },
+          {
+            src: "/trabajos/club/club-02.jpg",
+            alt: "Archive: works, authors and a chronological index, with the newspaper archive index at the foot.",
+          },
+        ],
         label: "View site ↗",
         href: "https://club-de-lectores-anonimos.vercel.app/",
         viewCaseLabel: "View Case ↗",
@@ -310,6 +364,20 @@ const content = {
         problem: "Experimental music blogs force listeners across disconnected services, breaking continuity between cover art, record labels, and audio sessions.",
         solution: "Deployed, navigable prototype: visual release catalogue with search and year filters, persistent listening queue, per-release dossier and a dual-deck Studio Mixer. Playback via official Bandcamp/YouTube players or local files that are never uploaded.",
         techSystem: "Ranked YouTube Data API / Official Bandcamp player / Persistent queue / Dual-deck Studio Mixer",
+        previews: [
+          {
+            src: "/trabajos/snd/snd-01.jpg",
+            alt: "SND* archive: search, year filters and the release grid.",
+          },
+          {
+            src: "/trabajos/snd/snd-02.jpg",
+            alt: "A release dossier with its cover and the reference of the original publication.",
+          },
+          {
+            src: "/trabajos/snd/snd-03.jpg",
+            alt: "Dual-deck Studio Mixer: crossfader, gain and EQ per channel.",
+          },
+        ],
         label: "View prototype ↗",
         href: "https://snd-steel.vercel.app/",
         viewCaseLabel: "View Case ↗",
