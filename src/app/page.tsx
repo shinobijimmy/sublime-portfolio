@@ -445,6 +445,8 @@ export default function Home() {
     });
   }, [selectedCase]);
 
+  const casePiezas = selectedCase?.previews ?? [];
+
   return (
     <main id="main">
       <section className="hero shell" id="top">
@@ -602,17 +604,6 @@ export default function Home() {
                       )}
                     </div>
                   </div>
-                  {item.previews && item.previews.length > 0 && (
-                    <figure className="work-preview">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={item.previews[0].src}
-                        alt={item.previews[0].alt}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </figure>
-                  )}
                 </article>
               ))}
             </div>
@@ -697,7 +688,7 @@ export default function Home() {
         <div className="modal-backdrop" onClick={() => setSelectedCase(null)}>
           <div
             ref={modalRef}
-            className="modal-content"
+            className={`modal-content${casePiezas.length > 0 ? " has-media" : ""}`}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -714,127 +705,115 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="modal-body">
-              <h2 id="modal-title">{selectedCase.title}</h2>
-              <div className="modal-meta-row mono">
-                <span>{t.metaRole}: {selectedCase.role}</span>
-                <span>{t.metaYear}: {selectedCase.year}</span>
-                <span>{t.metaCategory}: {selectedCase.category}</span>
-              </div>
+            <div className={`modal-body${casePiezas.length > 0 ? " has-media" : ""}`}>
+              {casePiezas.length > 0 && (
+                <div className="modal-media">
+                  <div
+                    className="modal-slideshow"
+                    role="group"
+                    aria-roledescription="carousel"
+                    aria-label={t.slideshowLabel}
+                  >
+                    <figure className="modal-slide">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={casePiezas[Math.min(slide, casePiezas.length - 1)].src}
+                        alt={casePiezas[Math.min(slide, casePiezas.length - 1)].alt}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </figure>
 
-              {selectedCase.previews && selectedCase.previews.length > 0 && (
-                <div
-                  className="modal-slideshow"
-                  role="group"
-                  aria-roledescription="carousel"
-                  aria-label={t.slideshowLabel}
-                >
-                  <figure className="modal-slide">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={
-                        selectedCase.previews[
-                          Math.min(slide, selectedCase.previews.length - 1)
-                        ].src
-                      }
-                      alt={
-                        selectedCase.previews[
-                          Math.min(slide, selectedCase.previews.length - 1)
-                        ].alt
-                      }
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </figure>
+                    <div className="slideshow-nav mono">
+                      <button
+                        type="button"
+                        className="slide-btn"
+                        aria-label={t.prevSlide}
+                        disabled={casePiezas.length < 2}
+                        onClick={() =>
+                          setSlide(
+                            (i) => (i - 1 + casePiezas.length) % casePiezas.length
+                          )
+                        }
+                      >
+                        ←
+                      </button>
 
-                  <div className="slideshow-nav mono">
-                    <button
-                      type="button"
-                      className="slide-btn"
-                      aria-label={t.prevSlide}
-                      disabled={selectedCase.previews.length < 2}
-                      onClick={() =>
-                        setSlide(
-                          (i) =>
-                            (i - 1 + selectedCase.previews!.length) %
-                            selectedCase.previews!.length
-                        )
-                      }
-                    >
-                      ←
-                    </button>
+                      <span aria-live="polite">
+                        {String(Math.min(slide, casePiezas.length - 1) + 1).padStart(2, "0")}{" "}
+                        / {String(casePiezas.length).padStart(2, "0")}
+                      </span>
 
-                    <span aria-live="polite">
-                      {String(
-                        Math.min(slide, selectedCase.previews.length - 1) + 1
-                      ).padStart(2, "0")}{" "}
-                      / {String(selectedCase.previews.length).padStart(2, "0")}
-                    </span>
-
-                    <button
-                      type="button"
-                      className="slide-btn"
-                      aria-label={t.nextSlide}
-                      disabled={selectedCase.previews.length < 2}
-                      onClick={() =>
-                        setSlide(
-                          (i) => (i + 1) % selectedCase.previews!.length
-                        )
-                      }
-                    >
-                      →
-                    </button>
-                  </div>
-
-                  {selectedCase.previews.length > 1 && (
-                    <div className="slide-dots">
-                      {selectedCase.previews.map((pieza, i) => (
-                        <button
-                          key={pieza.src}
-                          type="button"
-                          className={`slide-dot ${i === slide ? "on" : ""}`}
-                          aria-label={`${t.piece} ${i + 1}`}
-                          aria-current={i === slide}
-                          onClick={() => setSlide(i)}
-                        />
-                      ))}
+                      <button
+                        type="button"
+                        className="slide-btn"
+                        aria-label={t.nextSlide}
+                        disabled={casePiezas.length < 2}
+                        onClick={() => setSlide((i) => (i + 1) % casePiezas.length)}
+                      >
+                        →
+                      </button>
                     </div>
-                  )}
+
+                    {casePiezas.length > 1 && (
+                      <div className="slide-dots">
+                        {casePiezas.map((pieza, i) => (
+                          <button
+                            key={pieza.src}
+                            type="button"
+                            className={`slide-dot ${i === slide ? "on" : ""}`}
+                            aria-label={`${t.piece} ${i + 1}`}
+                            aria-current={i === slide}
+                            onClick={() => setSlide(i)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
-              <div className="modal-grid">
-                <div className="modal-section">
-                  <h4 className="mono">{t.caseProblemTitle}</h4>
-                  <p>{selectedCase.problem}</p>
+              <div className="modal-detail">
+                <h2 id="modal-title">{selectedCase.title}</h2>
+                <div className="modal-meta-row mono">
+                  <span>{t.metaRole}: {selectedCase.role}</span>
+                  <span>{t.metaYear}: {selectedCase.year}</span>
+                  <span>{t.metaCategory}: {selectedCase.category}</span>
                 </div>
 
-                <div className="modal-section">
-                  <h4 className="mono">{t.caseSolutionTitle}</h4>
-                  <p>{selectedCase.solution}</p>
+                <div className="modal-grid">
+                  <div className="modal-section">
+                    <h4 className="mono">{t.caseProblemTitle}</h4>
+                    <p>{selectedCase.problem}</p>
+                  </div>
+
+                  <div className="modal-section">
+                    <h4 className="mono">{t.caseSolutionTitle}</h4>
+                    <p>{selectedCase.solution}</p>
+                  </div>
+
+                  <div className="modal-section">
+                    <h4 className="mono">{t.caseTechTitle}</h4>
+                    <p className="mono highlight">{selectedCase.techSystem}</p>
+                  </div>
                 </div>
 
-                <div className="modal-section">
-                  <h4 className="mono">{t.caseTechTitle}</h4>
-                  <p className="mono highlight">{selectedCase.techSystem}</p>
+                <div className="modal-footer">
+                  {selectedCase.href ? (
+                    <a
+                      className="button"
+                      href={selectedCase.href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {selectedCase.label}
+                    </a>
+                  ) : (
+                    <span className="mono">
+                      {selectedCase.category === "Real" ? t.noLinkReal : t.noLinkLab}
+                    </span>
+                  )}
                 </div>
-              </div>
-
-              <div className="modal-footer">
-                {selectedCase.href ? (
-                  <a
-                    className="button"
-                    href={selectedCase.href}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {selectedCase.label}
-                  </a>
-                ) : (
-                  <span className="mono">
-                    {selectedCase.category === "Real" ? t.noLinkReal : t.noLinkLab}
-                  </span>
-                )}
               </div>
             </div>
           </div>
