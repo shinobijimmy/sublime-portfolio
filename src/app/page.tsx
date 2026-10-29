@@ -51,6 +51,10 @@ const content = {
     metaCategory: "Categoría",
     noLinkReal: "Trabajo real · sin enlace público",
     noLinkLab: "Proyecto en Lab / investigación interna",
+    prevSlide: "Anterior",
+    nextSlide: "Siguiente",
+    slideshowLabel: "Piezas del trabajo",
+    piece: "Pieza",
     caseProblemTitle: "01 / El Desafío",
     caseSolutionTitle: "02 / La Solución de Diseño",
     caseTechTitle: "03 / Arquitectura & Sistema",
@@ -125,6 +129,24 @@ const content = {
         problem: "ROVÍN tiene un espacio físico con más libros de los que puede mostrar y un único canal de consulta: el mensaje directo. El catálogo no reemplaza al local: tiene que hacer visible lo que existe sin inventar disponibilidad, precios ni historias.",
         solution: "Una sola superficie de catálogo: búsqueda y filtros por estado, idioma y tipo con el estado guardado en la URL, ficha por pieza con dirección propia y copiable, y tres estados explícitos —Disponible, Reservado, Vendido— donde una pieza vendida conserva su lugar en el archivo sin parecer disponible. El recorrido es descubrimiento → interés → consulta por Instagram (@rovin_romantico_vintage) o visita al local. Sin carrito, sin pago y sin canales que el espacio no tenga.",
         techSystem: "HTML, CSS y JavaScript estáticos / Firestore con build público separado / Frontera de datos propia / Vercel",
+        previews: [
+          {
+            src: "/trabajos/rovin/rovin-01-inicio.jpg",
+            alt: "Inicio del catálogo de ROVÍN: buscador, el nombre de la biblioteca y las últimas piezas ingresadas con precio y estado.",
+          },
+          {
+            src: "/trabajos/rovin/rovin-02-catalogo.jpg",
+            alt: "Catálogo: grilla de tapas con filtros por estado, idioma y tipo.",
+          },
+          {
+            src: "/trabajos/rovin/rovin-03-pieza.jpg",
+            alt: "Ficha de una pieza: tapa, precio, disponibilidad y la consulta por Instagram.",
+          },
+          {
+            src: "/trabajos/rovin/rovin-04-local.jpg",
+            alt: "Cómo conseguir una pieza: la venta es en el local y el único canal digital es Instagram.",
+          },
+        ],
         label: "Ver catálogo ↗",
         href: "https://publico-pearl.vercel.app/",
         viewCaseLabel: "Ver Caso ↗",
@@ -177,6 +199,10 @@ const content = {
     metaCategory: "Category",
     noLinkReal: "Client work · no public link",
     noLinkLab: "Lab project / internal research",
+    prevSlide: "Previous",
+    nextSlide: "Next",
+    slideshowLabel: "Work pieces",
+    piece: "Piece",
     caseProblemTitle: "01 / The Challenge",
     caseSolutionTitle: "02 / The Design Solution",
     caseTechTitle: "03 / Architecture & System",
@@ -251,6 +277,24 @@ const content = {
         problem: "ROVÍN has a physical space with more books than it can display and a single channel for enquiries: direct messages. The catalogue does not replace the shop: it has to make visible what exists without inventing availability, prices or stories.",
         solution: "A single catalogue surface: search and filters by state, language and type with the state kept in the URL, a detail page per piece with its own copyable address, and three explicit states —Available, Reserved, Sold— where a sold piece keeps its place in the archive without looking available. The path is discovery → interest → enquiry via Instagram (@rovin_romantico_vintage) or a visit. No cart, no payment, no channels the space does not have.",
         techSystem: "Static HTML, CSS and JavaScript / Firestore with a separate public build / Own data boundary / Vercel",
+        previews: [
+          {
+            src: "/trabajos/rovin/rovin-01-inicio.jpg",
+            alt: "ROVÍN catalogue home: search field, the library name and the latest pieces with price and state.",
+          },
+          {
+            src: "/trabajos/rovin/rovin-02-catalogo.jpg",
+            alt: "Catalogue: a grid of covers with filters by state, language and type.",
+          },
+          {
+            src: "/trabajos/rovin/rovin-03-pieza.jpg",
+            alt: "A piece detail page: cover, price, availability and the enquiry through Instagram.",
+          },
+          {
+            src: "/trabajos/rovin/rovin-04-local.jpg",
+            alt: "How to get a piece: sales happen in the shop and Instagram is the only digital channel.",
+          },
+        ],
         label: "View catalogue ↗",
         href: "https://publico-pearl.vercel.app/",
         viewCaseLabel: "View Case ↗",
@@ -290,6 +334,7 @@ export default function Home() {
   const [locale, setLocale] = useState<Locale>("es");
   const [categoryFilter, setCategoryFilter] = useState<ProjectCategory>("all");
   const [selectedCase, setSelectedCase] = useState<CaseStudy | null>(null);
+  const [slide, setSlide] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   // Guarda el disparador para devolverle el foco al cerrar.
@@ -298,6 +343,7 @@ export default function Home() {
 
   function openCase(item: CaseStudy) {
     lastFocused.current = document.activeElement as HTMLElement | null;
+    setSlide(0);
     setSelectedCase(item);
   }
 
@@ -370,6 +416,21 @@ export default function Home() {
 
     node.addEventListener("keydown", onKeyDown);
     return () => node.removeEventListener("keydown", onKeyDown);
+  }, [selectedCase]);
+
+  // El carrusel también responde a las flechas del teclado.
+  useEffect(() => {
+    if (!selectedCase || !selectedCase.previews || selectedCase.previews.length < 2) return;
+    const total = selectedCase.previews.length;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        setSlide((i) => (i - 1 + total) % total);
+      } else if (e.key === "ArrowRight") {
+        setSlide((i) => (i + 1) % total);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [selectedCase]);
 
   // Mientras el modal está abierto, el resto de la página no recibe foco.
@@ -662,13 +723,83 @@ export default function Home() {
               </div>
 
               {selectedCase.previews && selectedCase.previews.length > 0 && (
-                <div className="modal-previews">
-                  {selectedCase.previews.map((pieza) => (
-                    <figure className="modal-preview" key={pieza.src}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={pieza.src} alt={pieza.alt} loading="lazy" decoding="async" />
-                    </figure>
-                  ))}
+                <div
+                  className="modal-slideshow"
+                  role="group"
+                  aria-roledescription="carousel"
+                  aria-label={t.slideshowLabel}
+                >
+                  <figure className="modal-slide">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={
+                        selectedCase.previews[
+                          Math.min(slide, selectedCase.previews.length - 1)
+                        ].src
+                      }
+                      alt={
+                        selectedCase.previews[
+                          Math.min(slide, selectedCase.previews.length - 1)
+                        ].alt
+                      }
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </figure>
+
+                  <div className="slideshow-nav mono">
+                    <button
+                      type="button"
+                      className="slide-btn"
+                      aria-label={t.prevSlide}
+                      disabled={selectedCase.previews.length < 2}
+                      onClick={() =>
+                        setSlide(
+                          (i) =>
+                            (i - 1 + selectedCase.previews!.length) %
+                            selectedCase.previews!.length
+                        )
+                      }
+                    >
+                      ←
+                    </button>
+
+                    <span aria-live="polite">
+                      {String(
+                        Math.min(slide, selectedCase.previews.length - 1) + 1
+                      ).padStart(2, "0")}{" "}
+                      / {String(selectedCase.previews.length).padStart(2, "0")}
+                    </span>
+
+                    <button
+                      type="button"
+                      className="slide-btn"
+                      aria-label={t.nextSlide}
+                      disabled={selectedCase.previews.length < 2}
+                      onClick={() =>
+                        setSlide(
+                          (i) => (i + 1) % selectedCase.previews!.length
+                        )
+                      }
+                    >
+                      →
+                    </button>
+                  </div>
+
+                  {selectedCase.previews.length > 1 && (
+                    <div className="slide-dots">
+                      {selectedCase.previews.map((pieza, i) => (
+                        <button
+                          key={pieza.src}
+                          type="button"
+                          className={`slide-dot ${i === slide ? "on" : ""}`}
+                          aria-label={`${t.piece} ${i + 1}`}
+                          aria-current={i === slide}
+                          onClick={() => setSlide(i)}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
